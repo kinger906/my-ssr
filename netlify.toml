@@ -1,0 +1,11 @@
+[build]
+  command = "pnpm build"
+  publish = ".output/public"
+
+[build.environment]
+  NITRO_PRESET = "netlify"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
