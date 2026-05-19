@@ -35,6 +35,7 @@ jobs:
 
       - name: Deploy to Netlify
         run: |
+          npx netlify-cli env:set DATABASE_URL "${{ secrets.DATABASE_URL }}"
           npx netlify-cli deploy --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
