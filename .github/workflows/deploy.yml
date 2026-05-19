@@ -37,11 +37,13 @@ jobs:
         run: pnpm build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NITRO_PRESET: netlify
 
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: ./.output/public
+          functions-dir: ./.output/server
           production-branch: nuxt-ssr
           enable-commit-comment: false
           enable-pull-request-comment: false
