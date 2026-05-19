@@ -37,28 +37,10 @@ jobs:
         run: pnpm build
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NITRO_PRESET: netlify
-
-      - name: Debug output structure
-        run: |
-          echo "=== .output ==="
-          ls -la .output/
-          echo "=== .output/public ==="
-          ls -la .output/public/ 2>/dev/null || echo "not found"
-          echo "=== .netlify ==="
-          ls -laR .netlify/ 2>/dev/null || echo ".netlify not found"
-          echo "=== .output/server ==="
-          ls -la .output/server/ 2>/dev/null || echo ".output/server not found"
 
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3
-        with:
-          publish-dir: ./.output/public
-          functions-dir: ./.netlify/functions-internal
-          production-branch: nuxt-ssr
-          enable-commit-comment: false
-          enable-pull-request-comment: false
-          deploy-message: "Deploy from GitHub Actions"
+        run: |
+          npx netlify-cli deploy --prod --dir=.output/public
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
