@@ -3,9 +3,4 @@
   publish = ".output/public"
 
 [build.environment]
-  NITRO_PRESET = "netlify"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  DATABASE_URL = "${DATABASE_URL}"

@@ -33,14 +33,10 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Build
-        run: pnpm build
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
       - name: Deploy to Netlify
         run: |
-          npx netlify-cli deploy --prod --dir=.output/public
+          npx netlify-cli deploy --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
