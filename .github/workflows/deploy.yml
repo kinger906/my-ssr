@@ -2,9 +2,9 @@ name: Deploy to Netlify
 
 on:
   push:
-    branches: [nuxt-ssr]
+    branches: [my-ssr]
   pull_request:
-    branches: [nuxt-ssr]
+    branches: [my-ssr]
 
 jobs:
   build-and-deploy:
@@ -42,8 +42,9 @@ jobs:
         uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: ./.output/public
-          production-branch: main
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          production-branch: my-ssr
+          enable-commit-comment: false
+          enable-pull-request-comment: false
           deploy-message: "Deploy from GitHub Actions"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
