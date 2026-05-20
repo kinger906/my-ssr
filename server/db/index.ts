@@ -4,44 +4,28 @@ const { Pool } = pg
 
 let pool: pg.Pool | null = null
 
-function getDatabaseUrl() {
-  const config = useRuntimeConfig()
-  const connectionString =
-    config.databaseUrl ||
-    process.env.NUXT_DATABASE_URL ||
-    process.env.DATABASE_URL ||
-    ''
-
-  if (!connectionString) {
-    console.error('[db] Missing DATABASE_URL/NUXT_DATABASE_URL at runtime')
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Database configuration is missing'
-    })
-  }
-
-  return connectionString
-}
-
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  return String(error)
-}
-
 export function getPool(): pg.Pool {
   if (!pool) {
+    const config = useRuntimeConfig()
+    const connectionString = config.databaseUrl || process.env.DATABASE_URL
+
+    if (!connectionString) {
+      console.error('[db] Missing DATABASE_URL')
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Database configuration is missing'
+      })
+    }
+
     pool = new Pool({
-      connectionString: getDatabaseUrl(),
+      connectionString,
       max: 20,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000
     })
 
     pool.on('error', (err: Error) => {
-      console.error('[db] Unexpected database pool error:', err.message)
+      console.error('[db] Unexpected pool error:', err.message)
     })
   }
   return pool
@@ -52,12 +36,9 @@ export async function query(text: string, params?: unknown[]) {
 
   try {
     client = await getPool().connect()
-    const result = await client.query(text, params)
-    return result
+    return await client.query(text, params)
   } catch (error) {
-    console.error('[db] Query failed:', getErrorMessage(error))
-    console.error('[db] SQL:', text.replace(/\s+/g, ' ').trim())
-
+    console.error('[db] Query failed:', error instanceof Error ? error.message : String(error))
     throw createError({
       statusCode: 500,
       statusMessage: 'Database query failed'
