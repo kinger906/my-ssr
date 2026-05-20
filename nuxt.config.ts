@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     }
   },
   nitro: {
-    preset: 'netlify',
+    preset: 'vercel',
     experimental: {
       openAPI: true
     }

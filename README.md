@@ -58,7 +58,6 @@ my-ssr/
 │   └── index.ts                       # TypeScript 类型定义
 ├── app.vue                            # 应用根组件
 ├── nuxt.config.ts                     # Nuxt 配置
-├── netlify.toml                       # Netlify 部署配置
 ├── vitest.config.ts                   # 测试配置
 ├── .env.example                       # 环境变量示例
 └── package.json
@@ -159,14 +158,15 @@ DELETE /api/items/:id
 
 ## 部署
 
-### Netlify 部署
+### Vercel 部署
 
-1. 在 Netlify 中创建站点，获取 `NETLIFY_AUTH_TOKEN` 和 `NETLIFY_SITE_ID`
+1. 在 Vercel 中创建项目，获取 `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` 和 `VERCEL_TOKEN`
 2. 在 GitHub 仓库 Secrets 中添加：
    - `DATABASE_URL` - 数据库连接地址
-   - `NETLIFY_AUTH_TOKEN` - Netlify 认证令牌
-   - `NETLIFY_SITE_ID` - Netlify 站点 ID
-3. 推送代码到 `main` 分支，GitHub Actions 会自动构建并部署
+   - `VERCEL_ORG_ID` - Vercel 组织 ID
+   - `VERCEL_PROJECT_ID` - Vercel 项目 ID
+   - `VERCEL_TOKEN` - Vercel 认证令牌
+3. 推送代码到相应分支，GitHub Actions 会自动构建并部署
 
 ## 许可证
 

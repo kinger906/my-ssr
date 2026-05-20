@@ -1,10 +1,10 @@
-name: Deploy to Netlify
+name: Deploy to Vercel
 
 on:
   push:
-    branches: [nuxt-ssr]
+    branches: [nuxt-ssr-vercel]
   pull_request:
-    branches: [nuxt-ssr]
+    branches: [nuxt-ssr-vercel]
 
 jobs:
   build-and-deploy:
@@ -33,10 +33,13 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Deploy to Netlify
-        run: |
-          npx netlify-cli env:set DATABASE_URL "${{ secrets.DATABASE_URL }}"
-          npx netlify-cli deploy --prod
+      - name: Deploy to Vercel
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }}
