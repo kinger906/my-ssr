@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   css: [],
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL || '',
+    blobReadWriteToken: process.env.BLOB_READ_WRITE_TOKEN || '',
     public: {
       appName: '数据管理系统'
     }

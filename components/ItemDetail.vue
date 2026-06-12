@@ -46,6 +46,7 @@
               <span class="field-label">更新时间</span>
               <span class="field-value">{{ formatDate(item.updated_at) }}</span>
             </div>
+            <FileUpload :item-id="item.id" />
           </div>
         </div>
         <div class="detail-footer">

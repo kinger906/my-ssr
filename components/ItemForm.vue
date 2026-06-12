@@ -44,6 +44,8 @@
               <option value="archived">归档</option>
             </select>
           </div>
+          <FileUpload v-if="!isEdit" :item-id="undefined" />
+          <FileUpload v-else :item-id="item?.id" />
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" @click="onCancel">取消</button>

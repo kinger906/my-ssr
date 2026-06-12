@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateCreateItem, validateUpdateItem, validateId } from '../server/utils/validation'
+import { validateCreateItem, validateUpdateItem, validateId, validateFile } from '../server/utils/validation'
 
 describe('validateCreateItem', () => {
   it('should accept valid input', () => {
@@ -68,5 +68,74 @@ describe('validateId', () => {
     expect(() => validateId('abc')).toThrow()
     expect(() => validateId('-1')).toThrow()
     expect(() => validateId('0')).toThrow()
+  })
+})
+
+describe('validateFile', () => {
+  it('should accept valid image file', () => {
+    const buffer = Buffer.from('fake-image-data')
+    const file = {
+      originalname: 'test.png',
+      mimetype: 'image/png',
+      size: 1024,
+      buffer
+    }
+    expect(() => validateFile(file)).not.toThrow()
+  })
+
+  it('should reject null file', () => {
+    expect(() => validateFile(null)).toThrow()
+  })
+
+  it('should reject undefined file', () => {
+    expect(() => validateFile(undefined)).toThrow()
+  })
+
+  it('should reject empty file', () => {
+    const file = {
+      originalname: 'empty.png',
+      mimetype: 'image/png',
+      size: 0,
+      buffer: Buffer.from('')
+    }
+    expect(() => validateFile(file)).toThrow()
+  })
+
+  it('should reject oversized file', () => {
+    const file = {
+      originalname: 'large.png',
+      mimetype: 'image/png',
+      size: 11 * 1024 * 1024,
+      buffer: Buffer.alloc(11 * 1024 * 1024)
+    }
+    expect(() => validateFile(file)).toThrow()
+  })
+
+  it('should reject unsupported mime type', () => {
+    const file = {
+      originalname: 'doc.pdf',
+      mimetype: 'application/pdf',
+      size: 1024,
+      buffer: Buffer.from('pdf-data')
+    }
+    expect(() => validateFile(file)).toThrow()
+  })
+
+  it('should accept webp and jpeg', () => {
+    const webpFile = {
+      originalname: 'photo.webp',
+      mimetype: 'image/webp',
+      size: 2048,
+      buffer: Buffer.from('webp-data')
+    }
+    expect(() => validateFile(webpFile)).not.toThrow()
+
+    const jpegFile = {
+      originalname: 'photo.jpg',
+      mimetype: 'image/jpeg',
+      size: 2048,
+      buffer: Buffer.from('jpeg-data')
+    }
+    expect(() => validateFile(jpegFile)).not.toThrow()
   })
 })

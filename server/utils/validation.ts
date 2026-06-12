@@ -1,4 +1,5 @@
 import type { CreateItemInput, UpdateItemInput } from '../../types'
+import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from '../../types'
 
 export function validateCreateItem(body: unknown): CreateItemInput {
   if (!body || typeof body !== 'object') {
@@ -93,4 +94,41 @@ export function validateId(id: string): number {
     })
   }
   return numId
+}
+
+export function validateFile(file: { originalname?: string; mimetype?: string; size?: number; buffer?: Buffer } | null | undefined): asserts file is { originalname: string; mimetype: string; size: number; buffer: Buffer } {
+  if (!file) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'No file provided'
+    })
+  }
+
+  if (!file.originalname || !file.mimetype || !file.buffer || file.size === undefined) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid file data'
+    })
+  }
+
+  if (file.size === 0) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'File is empty'
+    })
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: `File size exceeds the maximum allowed size of ${MAX_FILE_SIZE / 1024 / 1024}MB`
+    })
+  }
+
+  if (!ALLOWED_IMAGE_TYPES.includes(file.mimetype as typeof ALLOWED_IMAGE_TYPES[number])) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Unsupported file type: ${file.mimetype}. Allowed types: ${ALLOWED_IMAGE_TYPES.join(', ')}`
+    })
+  }
 }
